@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 
 namespace ropadeportiva
 {
@@ -7,12 +9,17 @@ namespace ropadeportiva
     {
         static void Main(string[] args)
         {
-            GestorProductos gestorProductos = new GestorProductos();
-            GestorClientes gestorClientes = new GestorClientes();
-            GestorVentas gestorVentas = new GestorVentas();
+            IWindsorContainer container = new WindsorContainer();
+            container.Register(
+                Component.For<LoggingInterceptor>(),
+                Component.For<IGestor<Producto>>().ImplementedBy<GestorProductos>().Interceptors<LoggingInterceptor>(),
+                Component.For<IGestor<Cliente>>().ImplementedBy<GestorClientes>().Interceptors<LoggingInterceptor>(),
+                Component.For<IGestorVentas>().ImplementedBy<GestorVentas>().Interceptors<LoggingInterceptor>()
+            );
 
-            IGestor<Producto> gestorProductosInterface = gestorProductos;
-            IGestor<Cliente> gestorClientesInterface = gestorClientes;
+            IGestor<Producto> gestorProductosInterface = container.Resolve<IGestor<Producto>>();
+            IGestor<Cliente> gestorClientesInterface = container.Resolve<IGestor<Cliente>>();
+            IGestorVentas gestorVentas = container.Resolve<IGestorVentas>();
 
             bool salir = false;
 
@@ -300,7 +307,7 @@ namespace ropadeportiva
         }
 
         // GESTOR DE VENTAS
-        static void GestionarVentas(GestorVentas gestor, IGestor<Producto> gestorProductos, IGestor<Cliente> gestorClientes)
+        static void GestionarVentas(IGestorVentas gestor, IGestor<Producto> gestorProductos, IGestor<Cliente> gestorClientes)
         {
             bool volver = false;
 
@@ -349,7 +356,7 @@ namespace ropadeportiva
         }
 
         // Registrar Venta
-        static void RegistrarVenta(GestorVentas gestor, IGestor<Producto> gestorProductos, IGestor<Cliente> gestorClientes)
+        static void RegistrarVenta(IGestorVentas gestor, IGestor<Producto> gestorProductos, IGestor<Cliente> gestorClientes)
         {
             Console.Clear();
             Console.WriteLine("========== REGISTRAR VENTA ==========");
@@ -389,7 +396,7 @@ namespace ropadeportiva
             }
 
             Venta nuevaVenta = new Venta(id, clienteId, productoId, cantidad, DateTime.Now);
-            gestor.AgregarVenta(nuevaVenta);
+            gestor.Agregar(nuevaVenta);
 
             // Actualizar stock del producto
             int nuevoStock = producto.GetCantidadStock() - cantidad;
@@ -405,7 +412,7 @@ namespace ropadeportiva
         }
 
         // Ver Ventas por Cliente
-        static void VerVentasPorCliente(GestorVentas gestor)
+        static void VerVentasPorCliente(IGestorVentas gestor)
         {
             Console.Clear();
             Console.WriteLine("========== VER VENTAS POR CLIENTE ==========");
@@ -417,7 +424,7 @@ namespace ropadeportiva
         }
 
         // Eliminar Venta
-        static void EliminarVenta(GestorVentas gestor)
+        static void EliminarVenta(IGestorVentas gestor)
         {
             Console.Clear();
             Console.WriteLine("========== ELIMINAR VENTA ==========");
@@ -425,7 +432,7 @@ namespace ropadeportiva
             Console.Write("ID de la venta a eliminar: ");
             int id = int.Parse(Console.ReadLine());
 
-            gestor.EliminarVenta(id);
+            gestor.Eliminar(id);
         }
     }
 }

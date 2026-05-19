@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace ropadeportiva
 {
-    public class GestorVentas : GestorBase<Venta>
+    public class GestorVentas : GestorBase<Venta>, IGestorVentas
     {
         private List<Venta> ventas;
         private string rutaArchivo;
