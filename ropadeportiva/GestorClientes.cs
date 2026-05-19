@@ -136,6 +136,13 @@ namespace ropadeportiva
             return clientes;
         }
 
+        public List<Cliente> BuscarClientesPorNombre(string texto)
+        {
+            return clientes
+                .Where(c => c.GetNombre().Contains(texto, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
         // UPDATE - Actualizar un cliente
         public void ActualizarCliente(int id, Cliente clienteActualizado)
         {

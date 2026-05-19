@@ -187,6 +187,20 @@ namespace ropadeportiva
             return ventas.Where(v => v.GetProductoId() == productoId).ToList();
         }
 
+        public List<Venta> ObtenerVentasEntreFechas(DateTime fechaInicio, DateTime fechaFin)
+        {
+            return ventas
+                .Where(v => v.GetFecha() >= fechaInicio && v.GetFecha() <= fechaFin)
+                .ToList();
+        }
+
+        public double CalcularTotalVentas(Func<int, double> obtenerPrecioProducto)
+        {
+            return ventas
+                .Select(v => v.GetCantidad() * obtenerPrecioProducto(v.GetProductoId()))
+                .Aggregate(0.0, (total, monto) => total + monto);
+        }
+
         // DELETE - Eliminar una venta
         public void EliminarVenta(int id)
         {

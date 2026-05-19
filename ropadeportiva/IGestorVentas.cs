@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ropadeportiva
@@ -6,6 +7,8 @@ namespace ropadeportiva
     public interface IGestorVentas : IGestor<Venta>
     {
         List<Venta> ObtenerVentasPorCliente(int clienteId);
+        List<Venta> ObtenerVentasEntreFechas(DateTime fechaInicio, DateTime fechaFin);
+        double CalcularTotalVentas(Func<int, double> obtenerPrecioProducto);
         void MostrarVentasPorCliente(int clienteId);
     }
 }

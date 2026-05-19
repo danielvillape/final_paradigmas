@@ -139,6 +139,16 @@ namespace ropadeportiva
             return productos;
         }
 
+        public List<Producto> FiltrarProductos(Func<Producto, bool> criterio)
+        {
+            return productos.Where(criterio).ToList();
+        }
+
+        public List<Producto> ObtenerProductosEnStock()
+        {
+            return FiltrarProductos(p => p.GetCantidadStock() > 0);
+        }
+
         // UPDATE - Actualizar un producto
         public void ActualizarProducto(int id, Producto productoActualizado)
         {

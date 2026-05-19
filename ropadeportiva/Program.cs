@@ -317,9 +317,10 @@ namespace ropadeportiva
                 Console.WriteLine("========== GESTIÓN DE VENTAS ==========");
                 Console.WriteLine("1. Ver todas las ventas");
                 Console.WriteLine("2. Registrar nueva venta");
-                Console.WriteLine("3. Ver ventas de un cliente");
-                Console.WriteLine("4. Eliminar venta");
-                Console.WriteLine("5. Volver al menú principal");
+                Console.WriteLine("3. Mostrar total facturado");
+                Console.WriteLine("4. Ver ventas de un cliente");
+                Console.WriteLine("5. Eliminar venta");
+                Console.WriteLine("6. Volver al menú principal");
                 Console.WriteLine("=======================================");
                 Console.Write("Selecciona una opción: ");
 
@@ -334,12 +335,15 @@ namespace ropadeportiva
                         RegistrarVenta(gestor, gestorProductos, gestorClientes);
                         break;
                     case "3":
-                        VerVentasPorCliente(gestor);
+                        MostrarResumenVentas(gestor, gestorProductos);
                         break;
                     case "4":
-                        EliminarVenta(gestor);
+                        VerVentasPorCliente(gestor);
                         break;
                     case "5":
+                        EliminarVenta(gestor);
+                        break;
+                    case "6":
                         volver = true;
                         break;
                     default:
@@ -421,6 +425,23 @@ namespace ropadeportiva
             int clienteId = int.Parse(Console.ReadLine());
 
             gestor.MostrarVentasPorCliente(clienteId);
+        }
+
+        // Mostrar resumen de ventas usando LINQ funcional
+        static void MostrarResumenVentas(IGestorVentas gestor, IGestor<Producto> gestorProductos)
+        {
+            Console.Clear();
+            Console.WriteLine("========== RESUMEN DE VENTAS ==========");
+
+            double totalFacturado = gestor.CalcularTotalVentas(productoId =>
+            {
+                var producto = gestorProductos.Obtener(productoId);
+                return producto != null ? producto.GetPrecio() : 0;
+            });
+
+            Console.WriteLine($"Total facturado: ${totalFacturado:F2}");
+            Console.WriteLine($"Total ventas registradas: {gestor.ObtenerTodos().Count}");
+            Console.WriteLine("======================================");
         }
 
         // Eliminar Venta
