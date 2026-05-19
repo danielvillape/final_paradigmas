@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace ropadeportiva
 {
-    public class GestorVentas
+    public class GestorVentas : GestorBase<Venta>
     {
         private List<Venta> ventas;
         private string rutaArchivo;
@@ -119,14 +119,58 @@ namespace ropadeportiva
             }
         }
 
+        public override void Agregar(Venta venta) => AgregarVenta(venta);
+
         // READ - Obtener una venta por ID
         public Venta ObtenerVenta(int id)
         {
             return ventas.FirstOrDefault(v => v.GetId() == id);
         }
 
+        public override Venta Obtener(int id) => ObtenerVenta(id);
+
+        public override void Actualizar(int id, Venta ventaActualizada)
+        {
+            try
+            {
+                var ventaExistente = ObtenerVenta(id);
+                if (ventaExistente == null)
+                {
+                    Console.WriteLine("✗ Error: Venta no encontrada");
+                    return;
+                }
+
+                int indice = ventas.IndexOf(ventaExistente);
+                ventas[indice] = ventaActualizada;
+                GuardarVentas();
+                Console.WriteLine("✓ Venta actualizada exitosamente");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ Error al actualizar venta: {ex.Message}");
+            }
+        }
+
+        public override void Eliminar(int id) => EliminarVenta(id);
+
+        public override void MostrarTodos()
+        {
+            if (ventas.Count == 0)
+            {
+                Console.WriteLine("No hay ventas registradas");
+                return;
+            }
+
+            Console.WriteLine("\n========== LISTA DE VENTAS ==========");
+            foreach (var venta in ventas)
+            {
+                Console.WriteLine(venta);
+            }
+            Console.WriteLine("====================================\n");
+        }
+
         // READ - Obtener todas las ventas
-        public List<Venta> ObtenerTodos()
+        public override List<Venta> ObtenerTodos()
         {
             return ventas;
         }
@@ -163,23 +207,6 @@ namespace ropadeportiva
             {
                 Console.WriteLine($"✗ Error al eliminar venta: {ex.Message}");
             }
-        }
-
-        // Mostrar todas las ventas
-        public void MostrarTodos()
-        {
-            if (ventas.Count == 0)
-            {
-                Console.WriteLine("No hay ventas registradas");
-                return;
-            }
-
-            Console.WriteLine("\n========== LISTA DE VENTAS ==========");
-            foreach (var venta in ventas)
-            {
-                Console.WriteLine(venta);
-            }
-            Console.WriteLine("====================================\n");
         }
 
         // Mostrar ventas de un cliente

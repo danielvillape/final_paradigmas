@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace ropadeportiva
 {
-    public class GestorClientes
+    public class GestorClientes : GestorBase<Cliente>
     {
         private List<Cliente> clientes;
         private string rutaArchivo;
@@ -116,14 +116,22 @@ namespace ropadeportiva
             }
         }
 
+        public override void Agregar(Cliente cliente) => AgregarCliente(cliente);
+
         // READ - Obtener un cliente por ID
         public Cliente ObtenerCliente(int id)
         {
             return clientes.FirstOrDefault(c => c.GetId() == id);
         }
 
+        public override Cliente Obtener(int id) => ObtenerCliente(id);
+
+        public override void Actualizar(int id, Cliente clienteActualizado) => ActualizarCliente(id, clienteActualizado);
+
+        public override void Eliminar(int id) => EliminarCliente(id);
+
         // READ - Obtener todos los clientes
-        public List<Cliente> ObtenerTodos()
+        public override List<Cliente> ObtenerTodos()
         {
             return clientes;
         }
@@ -176,7 +184,7 @@ namespace ropadeportiva
         }
 
         // Mostrar todos los clientes
-        public void MostrarTodos()
+        public override void MostrarTodos()
         {
             if (clientes.Count == 0)
             {

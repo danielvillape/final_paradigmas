@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace ropadeportiva
 {
-    public class GestorProductos
+    public class GestorProductos : GestorBase<Producto>
     {
         private List<Producto> productos;
         private string rutaArchivo;
@@ -119,14 +119,22 @@ namespace ropadeportiva
             }
         }
 
+        public override void Agregar(Producto producto) => AgregarProducto(producto);
+
         // READ - Obtener un producto por ID
         public Producto ObtenerProducto(int id)
         {
             return productos.FirstOrDefault(p => p.GetId() == id);
         }
 
+        public override Producto Obtener(int id) => ObtenerProducto(id);
+
+        public override void Actualizar(int id, Producto productoActualizado) => ActualizarProducto(id, productoActualizado);
+
+        public override void Eliminar(int id) => EliminarProducto(id);
+
         // READ - Obtener todos los productos
-        public List<Producto> ObtenerTodos()
+        public override List<Producto> ObtenerTodos()
         {
             return productos;
         }
@@ -179,7 +187,7 @@ namespace ropadeportiva
         }
 
         // Mostrar todos los productos
-        public void MostrarTodos()
+        public override void MostrarTodos()
         {
             if (productos.Count == 0)
             {

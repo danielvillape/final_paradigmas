@@ -11,6 +11,9 @@ namespace ropadeportiva
             GestorClientes gestorClientes = new GestorClientes();
             GestorVentas gestorVentas = new GestorVentas();
 
+            IGestor<Producto> gestorProductosInterface = gestorProductos;
+            IGestor<Cliente> gestorClientesInterface = gestorClientes;
+
             bool salir = false;
 
             while (!salir)
@@ -21,13 +24,13 @@ namespace ropadeportiva
                 switch (opcion)
                 {
                     case "1":
-                        GestionarProductos(gestorProductos);
+                        GestionarProductos(gestorProductosInterface);
                         break;
                     case "2":
-                        GestionarClientes(gestorClientes);
+                        GestionarClientes(gestorClientesInterface);
                         break;
                     case "3":
-                        GestionarVentas(gestorVentas, gestorProductos, gestorClientes);
+                        GestionarVentas(gestorVentas, gestorProductosInterface, gestorClientesInterface);
                         break;
                     case "4":
                         salir = true;
@@ -63,7 +66,7 @@ namespace ropadeportiva
         }
 
         // GESTOR DE PRODUCTOS
-        static void GestionarProductos(GestorProductos gestor)
+        static void GestionarProductos(IGestor<Producto> gestor)
         {
             bool volver = false;
 
@@ -112,7 +115,7 @@ namespace ropadeportiva
         }
 
         // Agregar Producto
-        static void AgregarProducto(GestorProductos gestor)
+        static void AgregarProducto(IGestor<Producto> gestor)
         {
             Console.Clear();
             Console.WriteLine("========== AGREGAR PRODUCTO ==========");
@@ -133,11 +136,11 @@ namespace ropadeportiva
             int cantidadStock = int.Parse(Console.ReadLine());
 
             Producto nuevoProducto = new Producto(id, nombre, talla, precio, cantidadStock);
-            gestor.AgregarProducto(nuevoProducto);
+            gestor.Agregar(nuevoProducto);
         }
 
         // Actualizar Producto
-        static void ActualizarProducto(GestorProductos gestor)
+        static void ActualizarProducto(IGestor<Producto> gestor)
         {
             Console.Clear();
             Console.WriteLine("========== ACTUALIZAR PRODUCTO ==========");
@@ -145,7 +148,7 @@ namespace ropadeportiva
             Console.Write("ID del producto a actualizar: ");
             int id = int.Parse(Console.ReadLine());
 
-            Producto productoExistente = gestor.ObtenerProducto(id);
+            Producto productoExistente = gestor.Obtener(id);
             if (productoExistente == null)
             {
                 Console.WriteLine("✗ Producto no encontrado");
@@ -167,11 +170,11 @@ namespace ropadeportiva
             int cantidadStock = int.Parse(Console.ReadLine());
 
             Producto productoActualizado = new Producto(id, nombre, talla, precio, cantidadStock);
-            gestor.ActualizarProducto(id, productoActualizado);
+            gestor.Actualizar(id, productoActualizado);
         }
 
         // Eliminar Producto
-        static void EliminarProducto(GestorProductos gestor)
+        static void EliminarProducto(IGestor<Producto> gestor)
         {
             Console.Clear();
             Console.WriteLine("========== ELIMINAR PRODUCTO ==========");
@@ -179,11 +182,11 @@ namespace ropadeportiva
             Console.Write("ID del producto a eliminar: ");
             int id = int.Parse(Console.ReadLine());
 
-            gestor.EliminarProducto(id);
+            gestor.Eliminar(id);
         }
 
         // GESTOR DE CLIENTES
-        static void GestionarClientes(GestorClientes gestor)
+        static void GestionarClientes(IGestor<Cliente> gestor)
         {
             bool volver = false;
 
@@ -232,7 +235,7 @@ namespace ropadeportiva
         }
 
         // Agregar Cliente
-        static void AgregarCliente(GestorClientes gestor)
+        static void AgregarCliente(IGestor<Cliente> gestor)
         {
             Console.Clear();
             Console.WriteLine("========== AGREGAR CLIENTE ==========");
@@ -250,11 +253,11 @@ namespace ropadeportiva
             string telefono = Console.ReadLine() ?? "";
 
             Cliente nuevoCliente = new Cliente(id, nombre, email, telefono);
-            gestor.AgregarCliente(nuevoCliente);
+            gestor.Agregar(nuevoCliente);
         }
 
         // Actualizar Cliente
-        static void ActualizarCliente(GestorClientes gestor)
+        static void ActualizarCliente(IGestor<Cliente> gestor)
         {
             Console.Clear();
             Console.WriteLine("========== ACTUALIZAR CLIENTE ==========");
@@ -262,7 +265,7 @@ namespace ropadeportiva
             Console.Write("ID del cliente a actualizar: ");
             int id = int.Parse(Console.ReadLine());
 
-            Cliente clienteExistente = gestor.ObtenerCliente(id);
+            Cliente clienteExistente = gestor.Obtener(id);
             if (clienteExistente == null)
             {
                 Console.WriteLine("✗ Cliente no encontrado");
@@ -281,11 +284,11 @@ namespace ropadeportiva
             string telefono = Console.ReadLine() ?? "";
 
             Cliente clienteActualizado = new Cliente(id, nombre, email, telefono);
-            gestor.ActualizarCliente(id, clienteActualizado);
+            gestor.Actualizar(id, clienteActualizado);
         }
 
         // Eliminar Cliente
-        static void EliminarCliente(GestorClientes gestor)
+        static void EliminarCliente(IGestor<Cliente> gestor)
         {
             Console.Clear();
             Console.WriteLine("========== ELIMINAR CLIENTE ==========");
@@ -293,11 +296,11 @@ namespace ropadeportiva
             Console.Write("ID del cliente a eliminar: ");
             int id = int.Parse(Console.ReadLine());
 
-            gestor.EliminarCliente(id);
+            gestor.Eliminar(id);
         }
 
         // GESTOR DE VENTAS
-        static void GestionarVentas(GestorVentas gestor, GestorProductos gestorProductos, GestorClientes gestorClientes)
+        static void GestionarVentas(GestorVentas gestor, IGestor<Producto> gestorProductos, IGestor<Cliente> gestorClientes)
         {
             bool volver = false;
 
@@ -346,7 +349,7 @@ namespace ropadeportiva
         }
 
         // Registrar Venta
-        static void RegistrarVenta(GestorVentas gestor, GestorProductos gestorProductos, GestorClientes gestorClientes)
+        static void RegistrarVenta(GestorVentas gestor, IGestor<Producto> gestorProductos, IGestor<Cliente> gestorClientes)
         {
             Console.Clear();
             Console.WriteLine("========== REGISTRAR VENTA ==========");
@@ -358,7 +361,7 @@ namespace ropadeportiva
             int clienteId = int.Parse(Console.ReadLine());
 
             // Validar que el cliente exista
-            if (gestorClientes.ObtenerCliente(clienteId) == null)
+            if (gestorClientes.Obtener(clienteId) == null)
             {
                 Console.WriteLine("✗ Cliente no encontrado");
                 return;
@@ -368,7 +371,7 @@ namespace ropadeportiva
             int productoId = int.Parse(Console.ReadLine());
 
             // Validar que el producto exista
-            Producto producto = gestorProductos.ObtenerProducto(productoId);
+            Producto producto = gestorProductos.Obtener(productoId);
             if (producto == null)
             {
                 Console.WriteLine("✗ Producto no encontrado");
@@ -397,7 +400,7 @@ namespace ropadeportiva
                 producto.GetPrecio(), 
                 nuevoStock
             );
-            gestorProductos.ActualizarProducto(productoId, productoActualizado);
+            gestorProductos.Actualizar(productoId, productoActualizado);
             Console.WriteLine($"✓ Stock actualizado. Nuevo stock: {nuevoStock}");
         }
 
