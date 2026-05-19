@@ -12,6 +12,15 @@ namespace ropadeportiva
         private List<Producto> productos;
         private string rutaArchivo;
 
+        public event EventHandler<ProductoEventArgs>? ProductoAgregado;
+        public event EventHandler<ProductoEventArgs>? StockActualizado;
+
+        protected virtual void OnProductoAgregado(Producto producto)
+            => ProductoAgregado?.Invoke(this, new ProductoEventArgs(producto));
+
+        protected virtual void OnStockActualizado(Producto producto, int cantidadAnterior, int cantidadNueva)
+            => StockActualizado?.Invoke(this, new ProductoEventArgs(producto, cantidadAnterior, cantidadNueva));
+
         // Constructor
         public GestorProductos()
         {
@@ -111,6 +120,7 @@ namespace ropadeportiva
 
                 productos.Add(producto);
                 GuardarProductos();
+                OnProductoAgregado(producto);
                 Console.WriteLine("✓ Producto agregado exitosamente");
             }
             catch (Exception ex)
@@ -163,9 +173,11 @@ namespace ropadeportiva
 
                 // Actualizar el producto en la lista
                 int indice = productos.IndexOf(productoExistente);
+                int cantidadAnterior = productoExistente.GetCantidadStock();
                 productos[indice] = productoActualizado;
 
                 GuardarProductos();
+                OnStockActualizado(productoActualizado, cantidadAnterior, productoActualizado.GetCantidadStock());
                 Console.WriteLine("✓ Producto actualizado exitosamente");
             }
             catch (Exception ex)

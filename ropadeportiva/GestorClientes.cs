@@ -12,6 +12,19 @@ namespace ropadeportiva
         private List<Cliente> clientes;
         private string rutaArchivo;
 
+        public event EventHandler<ClienteEventArgs>? ClienteAgregado;
+        public event EventHandler<ClienteEventArgs>? ClienteActualizado;
+        public event EventHandler<ClienteEventArgs>? ClienteEliminado;
+
+        protected virtual void OnClienteAgregado(Cliente cliente)
+            => ClienteAgregado?.Invoke(this, new ClienteEventArgs(cliente));
+
+        protected virtual void OnClienteActualizado(Cliente cliente)
+            => ClienteActualizado?.Invoke(this, new ClienteEventArgs(cliente));
+
+        protected virtual void OnClienteEliminado(Cliente cliente)
+            => ClienteEliminado?.Invoke(this, new ClienteEventArgs(cliente));
+
         // Constructor
         public GestorClientes()
         {
@@ -108,6 +121,7 @@ namespace ropadeportiva
 
                 clientes.Add(cliente);
                 GuardarClientes();
+                OnClienteAgregado(cliente);
                 Console.WriteLine("✓ Cliente agregado exitosamente");
             }
             catch (Exception ex)
@@ -160,6 +174,7 @@ namespace ropadeportiva
                 clientes[indice] = clienteActualizado;
 
                 GuardarClientes();
+                OnClienteActualizado(clienteActualizado);
                 Console.WriteLine("✓ Cliente actualizado exitosamente");
             }
             catch (Exception ex)
@@ -182,6 +197,7 @@ namespace ropadeportiva
 
                 clientes.Remove(cliente);
                 GuardarClientes();
+                OnClienteEliminado(cliente);
                 Console.WriteLine("✓ Cliente eliminado exitosamente");
             }
             catch (Exception ex)

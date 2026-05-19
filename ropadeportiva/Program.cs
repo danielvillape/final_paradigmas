@@ -12,14 +12,20 @@ namespace ropadeportiva
             IWindsorContainer container = new WindsorContainer();
             container.Register(
                 Component.For<LoggingInterceptor>(),
-                Component.For<IGestor<Producto>>().ImplementedBy<GestorProductos>().Interceptors<LoggingInterceptor>(),
-                Component.For<IGestor<Cliente>>().ImplementedBy<GestorClientes>().Interceptors<LoggingInterceptor>(),
-                Component.For<IGestorVentas>().ImplementedBy<GestorVentas>().Interceptors<LoggingInterceptor>()
+                Component.For<IGestor<Producto>, GestorProductos>().ImplementedBy<GestorProductos>().Interceptors<LoggingInterceptor>(),
+                Component.For<IGestor<Cliente>, GestorClientes>().ImplementedBy<GestorClientes>().Interceptors<LoggingInterceptor>(),
+                Component.For<IGestorVentas, GestorVentas>().ImplementedBy<GestorVentas>().Interceptors<LoggingInterceptor>()
             );
 
-            IGestor<Producto> gestorProductosInterface = container.Resolve<IGestor<Producto>>();
-            IGestor<Cliente> gestorClientesInterface = container.Resolve<IGestor<Cliente>>();
-            IGestorVentas gestorVentas = container.Resolve<IGestorVentas>();
+            GestorProductos gestorProductos = container.Resolve<GestorProductos>();
+            GestorClientes gestorClientes = container.Resolve<GestorClientes>();
+            GestorVentas gestorVentas = container.Resolve<GestorVentas>();
+
+            IGestor<Producto> gestorProductosInterface = gestorProductos;
+            IGestor<Cliente> gestorClientesInterface = gestorClientes;
+            IGestorVentas gestorVentasInterface = gestorVentas;
+
+            AsociarManejadoresDeEventos(gestorClientes, gestorProductos, gestorVentas);
 
             bool salir = false;
 
@@ -55,6 +61,27 @@ namespace ropadeportiva
                     Console.Clear();
                 }
             }
+        }
+
+        static void AsociarManejadoresDeEventos(GestorClientes gestorClientes, GestorProductos gestorProductos, GestorVentas gestorVentas)
+        {
+            gestorClientes.ClienteAgregado += (_, e) =>
+                Console.WriteLine($"[Evento] Cliente agregado: {e.Cliente.GetNombre()} (ID {e.Cliente.GetId()})");
+
+            gestorClientes.ClienteActualizado += (_, e) =>
+                Console.WriteLine($"[Evento] Cliente actualizado: {e.Cliente.GetNombre()} (ID {e.Cliente.GetId()})");
+
+            gestorClientes.ClienteEliminado += (_, e) =>
+                Console.WriteLine($"[Evento] Cliente eliminado: {e.Cliente.GetNombre()} (ID {e.Cliente.GetId()})");
+
+            gestorProductos.ProductoAgregado += (_, e) =>
+                Console.WriteLine($"[Evento] Producto agregado: {e.Producto.GetNombre()} (ID {e.Producto.GetId()})");
+
+            gestorProductos.StockActualizado += (_, e) =>
+                Console.WriteLine($"[Evento] Stock actualizado para {e.Producto.GetNombre()}: {e.CantidadAntigua} -> {e.CantidadNueva}");
+
+            gestorVentas.VentaRegistrada += (_, e) =>
+                Console.WriteLine($"[Evento] Venta registrada: ID {e.Venta.GetId()}, Cliente {e.Venta.GetClienteId()}, Producto {e.Venta.GetProductoId()}");
         }
 
         // MENÚ PRINCIPAL

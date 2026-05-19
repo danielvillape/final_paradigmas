@@ -12,6 +12,11 @@ namespace ropadeportiva
         private List<Venta> ventas;
         private string rutaArchivo;
 
+        public event EventHandler<VentaEventArgs>? VentaRegistrada;
+
+        protected virtual void OnVentaRegistrada(Venta venta)
+            => VentaRegistrada?.Invoke(this, new VentaEventArgs(venta));
+
         // Constructor
         public GestorVentas()
         {
@@ -111,6 +116,7 @@ namespace ropadeportiva
 
                 ventas.Add(venta);
                 GuardarVentas();
+                OnVentaRegistrada(venta);
                 Console.WriteLine("✓ Venta registrada exitosamente");
             }
             catch (Exception ex)
