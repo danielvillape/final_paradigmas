@@ -151,10 +151,6 @@ Se utiliza `CsvHelper` para la lectura y escritura de CSV.
 
 ## 💬 Autor
 
-Proyecto desarrollado como trabajo final.
+Daniel Villa Peláez
 
 ---
-
-## 📄 Licencia
-
-Uso educativo.
