@@ -124,12 +124,6 @@ El proyecto incluye pruebas unitarias para los gestores de clientes, productos y
 
 ---
 
-## 📊 Diagrama UML
-
-El diagrama de clases está documentado en `UML.md`.
-
----
-
 ## 🔒 Persistencia de datos
 
 Los datos se guardan en CSV en `bin/Debug/net8.0/`:
@@ -144,8 +138,6 @@ Se utiliza `CsvHelper` para la lectura y escritura de CSV.
 ## ✅ Estado final
 
 - Implementación completa de POO, AOP, programación funcional y eventos.
-- Diagrama UML generado.
-- Pruebas unitarias creadas y ejecutadas.
 
 ---
 
